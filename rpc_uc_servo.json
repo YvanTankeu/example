@@ -1,0 +1,262 @@
+{
+  "ruleChain": {
+    "additionalInfo": {
+      "description": ""
+    },
+    "name": "RPC uC Servo",
+    "type": "CORE",
+    "firstRuleNodeId": null,
+    "root": false,
+    "debugMode": false,
+    "configuration": null
+  },
+  "metadata": {
+    "firstNodeIndex": 1,
+    "nodes": [
+      {
+        "additionalInfo": {
+          "description": "",
+          "layoutX": 1010,
+          "layoutY": 222
+        },
+        "type": "org.thingsboard.rule.engine.filter.TbJsFilterNode",
+        "name": "Check RPC msg",
+        "debugMode": true,
+        "configuration": {
+          "jsScript": "return msgType == 'RPC message'; "
+        }
+      },
+      {
+        "additionalInfo": {
+          "description": null,
+          "layoutX": 94,
+          "layoutY": 309
+        },
+        "type": "org.thingsboard.rule.engine.filter.TbJsFilterNode",
+        "name": "Under Threshold",
+        "debugMode": true,
+        "configuration": {
+          "jsScript": "return msg.Temperature >=24.60;"
+        }
+      },
+      {
+        "additionalInfo": {
+          "description": null,
+          "layoutX": 512,
+          "layoutY": 154
+        },
+        "type": "org.thingsboard.rule.engine.action.TbCreateAlarmNode",
+        "name": "Create Alarm",
+        "debugMode": true,
+        "configuration": {
+          "alarmType": "Critical Temperature",
+          "alarmDetailsBuildJs": "var details = {};\nif (metadata.prevAlarmDetails) {\n    details = JSON.parse(metadata.prevAlarmDetails);\n}\nreturn details;",
+          "severity": "CRITICAL",
+          "propagate": true
+        }
+      },
+      {
+        "additionalInfo": {
+          "description": null,
+          "layoutX": 764,
+          "layoutY": 148
+        },
+        "type": "org.thingsboard.rule.engine.transform.TbTransformMsgNode",
+        "name": "High",
+        "debugMode": true,
+        "configuration": {
+          "jsScript": "var newMsg = {};\nnewMsg.method = 'Status';\nvar msgType = 'RPC message';\nnewMsg.params = 'High';\n\nreturn {msg: newMsg, metadata: metadata, msgType: msgType}; "
+        }
+      },
+      {
+        "additionalInfo": {
+          "description": "",
+          "layoutX": 1267,
+          "layoutY": 142
+        },
+        "type": "org.thingsboard.rule.engine.rpc.TbSendRPCRequestNode",
+        "name": "Status True",
+        "debugMode": true,
+        "configuration": {
+          "timeoutInSeconds": 60
+        }
+      },
+      {
+        "additionalInfo": {
+          "description": "",
+          "layoutX": 246,
+          "layoutY": 220
+        },
+        "type": "org.thingsboard.rule.engine.filter.TbJsFilterNode",
+        "name": "Filtre high and low temp",
+        "debugMode": true,
+        "configuration": {
+          "jsScript": "return msg.Temperature >=  25;"
+        }
+      },
+      {
+        "additionalInfo": {
+          "description": null,
+          "layoutX": 398,
+          "layoutY": 508
+        },
+        "type": "org.thingsboard.rule.engine.action.TbCreateAlarmNode",
+        "name": "Create Alarm",
+        "debugMode": true,
+        "configuration": {
+          "alarmType": "Critical Temperature",
+          "alarmDetailsBuildJs": "var details = {};\nif (metadata.prevAlarmDetails) {\n    details = JSON.parse(metadata.prevAlarmDetails);\n}\nreturn details;",
+          "severity": "CRITICAL",
+          "propagate": true
+        }
+      },
+      {
+        "additionalInfo": {
+          "description": null,
+          "layoutX": 641,
+          "layoutY": 550
+        },
+        "type": "org.thingsboard.rule.engine.transform.TbTransformMsgNode",
+        "name": "Low",
+        "debugMode": true,
+        "configuration": {
+          "jsScript": "var newMsg = {};\nnewMsg.method = 'Status';\nvar msgType = 'RPC message';\nnewMsg.params = 'Low';\n\nreturn {msg: newMsg, metadata: metadata, msgType: msgType}; "
+        }
+      },
+      {
+        "additionalInfo": {
+          "description": "",
+          "layoutX": 1144,
+          "layoutY": 544
+        },
+        "type": "org.thingsboard.rule.engine.rpc.TbSendRPCRequestNode",
+        "name": "Status True",
+        "debugMode": true,
+        "configuration": {
+          "timeoutInSeconds": 60
+        }
+      },
+      {
+        "additionalInfo": {
+          "description": "",
+          "layoutX": 905,
+          "layoutY": 547
+        },
+        "type": "org.thingsboard.rule.engine.filter.TbJsFilterNode",
+        "name": "Check RPC msg",
+        "debugMode": true,
+        "configuration": {
+          "jsScript": "return msgType == 'RPC message'; "
+        }
+      },
+      {
+        "additionalInfo": {
+          "description": null,
+          "layoutX": 514,
+          "layoutY": 303
+        },
+        "type": "org.thingsboard.rule.engine.action.TbClearAlarmNode",
+        "name": "Clear Alarm",
+        "debugMode": true,
+        "configuration": {
+          "alarmType": "Critical Temperature",
+          "alarmDetailsBuildJs": "var details = {};\nif (metadata.prevAlarmDetails) {\n    details = JSON.parse(metadata.prevAlarmDetails);\n}\nreturn details;"
+        }
+      },
+      {
+        "additionalInfo": {
+          "description": null,
+          "layoutX": 770,
+          "layoutY": 300
+        },
+        "type": "org.thingsboard.rule.engine.transform.TbTransformMsgNode",
+        "name": "Normal",
+        "debugMode": true,
+        "configuration": {
+          "jsScript": "var newMsg = {};\nnewMsg.method = 'Status';\nvar msgType = 'RPC message';\nnewMsg.params = 'Normal';\n\nreturn {msg: newMsg, metadata: metadata, msgType: msgType}; "
+        }
+      },
+      {
+        "additionalInfo": {
+          "description": "",
+          "layoutX": 1273,
+          "layoutY": 306
+        },
+        "type": "org.thingsboard.rule.engine.rpc.TbSendRPCRequestNode",
+        "name": "Status False",
+        "debugMode": true,
+        "configuration": {
+          "timeoutInSeconds": 60
+        }
+      }
+    ],
+    "connections": [
+      {
+        "fromIndex": 0,
+        "toIndex": 4,
+        "type": "True"
+      },
+      {
+        "fromIndex": 0,
+        "toIndex": 12,
+        "type": "True"
+      },
+      {
+        "fromIndex": 1,
+        "toIndex": 5,
+        "type": "True"
+      },
+      {
+        "fromIndex": 1,
+        "toIndex": 6,
+        "type": "False"
+      },
+      {
+        "fromIndex": 2,
+        "toIndex": 3,
+        "type": "Created"
+      },
+      {
+        "fromIndex": 3,
+        "toIndex": 0,
+        "type": "Success"
+      },
+      {
+        "fromIndex": 5,
+        "toIndex": 2,
+        "type": "True"
+      },
+      {
+        "fromIndex": 5,
+        "toIndex": 10,
+        "type": "False"
+      },
+      {
+        "fromIndex": 6,
+        "toIndex": 7,
+        "type": "Created"
+      },
+      {
+        "fromIndex": 7,
+        "toIndex": 9,
+        "type": "Success"
+      },
+      {
+        "fromIndex": 9,
+        "toIndex": 8,
+        "type": "True"
+      },
+      {
+        "fromIndex": 10,
+        "toIndex": 11,
+        "type": "Cleared"
+      },
+      {
+        "fromIndex": 11,
+        "toIndex": 0,
+        "type": "Success"
+      }
+    ],
+    "ruleChainConnections": null
+  }
+}
